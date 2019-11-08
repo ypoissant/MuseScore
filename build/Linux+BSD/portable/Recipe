@@ -119,6 +119,8 @@ if [[ ! -d "MuseScore" ]]; then
   exit 0
 fi
 
+python -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)" # workaround for https://github.com/travis-ci/travis-ci/issues/8973
+
 ##########################################################################
 # BUILD MUSESCORE
 ##########################################################################
