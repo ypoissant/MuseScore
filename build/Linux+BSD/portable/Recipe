@@ -82,7 +82,7 @@ export CC="/usr/bin/gcc-${gcc_version}"
 export CXX="/usr/bin/g++-${gcc_version}"
 
 # Get newer Qt (only used cached version if it is the same)
-qt_version="5124"
+qt_version="598"
 qt_dir="qt/${qt_version}"
 if [[ ! -d "${qt_dir}" ]]; then
   mkdir -p "${qt_dir}"
