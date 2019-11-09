@@ -119,8 +119,6 @@ if [[ ! -d "MuseScore" ]]; then
   exit 0
 fi
 
-python -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)" # workaround for https://github.com/travis-ci/travis-ci/issues/8973
-
 ##########################################################################
 # BUILD MUSESCORE
 ##########################################################################
@@ -200,8 +198,28 @@ prefix="$(cat build.release/PREFIX.txt)" # MuseScore was installed here
 cd "$(dirname "${prefix}")"
 appdir="$(basename "${prefix}")" # directory that will become the AppImage
 
+# Remove Qt plugins for MySQL and PostgreSQL to prevent
+# linuxdeploy-plugin-qt from failing due to missing dependencies.
+# SQLite plugin alone should be enough for our AppImage.
+# rm -f ${qt_path}/plugins/sqldrivers/libqsql{mysql,psql}.so
+qt_sql_drivers_path="${qt_path}/plugins/sqldrivers"
+qt_sql_drivers_tmp="/tmp/qtsqldrivers"
+mkdir -p "$qt_sql_drivers_tmp"
+mv "${qt_sql_drivers_path}/libqsqlmysql.so" "${qt_sql_drivers_tmp}/libqsqlmysql.so"
+mv "${qt_sql_drivers_path}/libqsqlpsql.so" "${qt_sql_drivers_tmp}/libqsqlpsql.so"
+
+# Colon-separated list of root directories containing QML files.
+# Needed for linuxdeploy-plugin-qt to scan for QML imports.
+export QML_SOURCES_PATHS=/MuseScore/mscore/qml/palettes
+
 linuxdeploy --appdir "${appdir}" # adds all shared library dependencies
 linuxdeploy-plugin-qt --appdir "${appdir}" # adds all Qt dependencies
+
+unset QML_SOURCES_PATHS
+
+# In case this container is reused multiple times, return the moved libraries back
+mv "${qt_sql_drivers_tmp}/libqsqlmysql.so" "${qt_sql_drivers_path}/libqsqlmysql.so"
+mv "${qt_sql_drivers_tmp}/libqsqlpsql.so" "${qt_sql_drivers_path}/libqsqlpsql.so"
 
 ##########################################################################
 # BUNDLE REMAINING DEPENDENCIES MANUALLY
