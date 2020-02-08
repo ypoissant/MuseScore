@@ -192,9 +192,9 @@ set_bundle_display_options ${VOLUME}
 mv ${VOLUME}/Pictures ${VOLUME}/.Pictures
 
 CODE_PATHS=(
-    "${VOLUME}/${LONGER_NAME}.app"
     "${VOLUME}/${LONGER_NAME}.app/Contents/Frameworks/Sparkle.framework/Versions/A/Resources/Autoupdate.app"
-    "${VOLUME}/${LONGER_NAME}.app/Resources/qml"
+    "${VOLUME}/${LONGER_NAME}.app/Contents/Resources/qml"
+    "${VOLUME}/${LONGER_NAME}.app"
 )
 
 #codesign
