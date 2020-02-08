@@ -193,7 +193,7 @@ mv ${VOLUME}/Pictures ${VOLUME}/.Pictures
 
 #codesign
 echo "Codesign"
-codesign --deep -s "Developer ID Application: MuseScore" "${VOLUME}/${LONGER_NAME}.app"
+codesign --options runtime --deep -s "Developer ID Application: MuseScore" "${VOLUME}/${LONGER_NAME}.app"
 echo "spctl"
 spctl --assess --type execute "${VOLUME}/${LONGER_NAME}.app"
 echo "Codesign verify"
