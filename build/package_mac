@@ -193,12 +193,12 @@ mv ${VOLUME}/Pictures ${VOLUME}/.Pictures
 
 CODE_PATHS=(
     "${VOLUME}/${LONGER_NAME}.app/Contents/Frameworks/Sparkle.framework/Versions/A/Resources/Autoupdate.app"
-    "${VOLUME}/${LONGER_NAME}.app/Contents/Resources/qml"
     "${VOLUME}/${LONGER_NAME}.app"
 )
 
 #codesign
 echo "Codesign"
+find "${VOLUME}/${LONGER_NAME}.app/Contents/Resources" -name '*.dylib' -exec codesign --options runtime --deep -s "Developer ID Application: MuseScore" '{}' ';'
 codesign --options runtime --deep -s "Developer ID Application: MuseScore" "${CODE_PATHS[@]}"
 echo "spctl"
 spctl --assess --type execute "${VOLUME}/${LONGER_NAME}.app"
